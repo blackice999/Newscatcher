@@ -1,0 +1,496 @@
+package com.example.newscatcher;
+
+import android.app.DialogFragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
+import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.net.Uri;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.os.Parcelable;
+import android.os.StrictMode;
+import android.preference.ListPreference;
+import android.preference.MultiSelectListPreference;
+import android.preference.PreferenceActivity;
+import android.preference.PreferenceManager;
+import android.preference.PreferenceScreen;
+import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.util.LruCache;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ListView;
+import android.widget.ProgressBar;
+import android.widget.Toast;
+
+import com.example.newscatcher.article.Channel;
+import com.example.newscatcher.article.Enclosure;
+import com.example.newscatcher.article.Item;
+
+import org.xml.sax.Attributes;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.XMLReader;
+import org.xml.sax.helpers.DefaultHandler;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+
+public class MainActivity extends AppCompatActivity
+        implements NavigationView.OnNavigationItemSelectedListener, DialogArticleFragment.DialogClickListener {
+
+    public static final String EXTRA_TITLE = "com.example.EXTRA_TITLE";
+    public static final String EXTRA_LINK = "com.example.EXTRA_LINK";
+    public static final String REALITATEA_URL = "http://rss.realitatea.net/sport.xml";
+    public static final String EUROSPORT_FR_URL = "http://www.eurosport.fr/rss.xml";
+    public static final String FOX_SPORTS_URL = "http://api.foxsports.com/v1/rss?partnerKey=zBaFxRyGKCfxBagJG9b8pqLyndmvo7UU&tag=nba";
+    private List<String> articleLinks = new ArrayList<>();
+    private ListViewAdapter adapter;
+    public int type;
+    public boolean wifi_switch;
+    private ListView listView;
+    private SwipeRefreshLayout swipeRefreshLayout;
+    private volatile List<Item> itemList = new ArrayList<>();
+    private SAXRSSTask saxrssTask;
+    private LruCache<String, Bitmap> memoryCache;
+    private ProgressBar progressBar;
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if(adapter == null) {
+//            getArticles(articleLinks);
+        }
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+//        getWindow().requestFeature(Window.FEATURE_ACTION_BAR_OVERLAY);
+        super.onCreate(savedInstanceState);
+
+        setContentView(R.layout.activity_main);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.setDrawerListener(toggle);
+        toggle.syncState();
+
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+
+        int maxMemory = (int) (Runtime.getRuntime().maxMemory() / 1024);
+        int cacheSize = maxMemory / 8;
+
+        memoryCache = new LruCache<String, Bitmap>(cacheSize) {
+            @Override
+            protected int sizeOf(String key, Bitmap value) {
+                return value.getByteCount() / 1024;
+
+            }
+        };
+
+//        progressBar = (ProgressBar) findViewById(R.id.progress_bar);
+
+
+        listView = (ListView) findViewById(R.id.rv_article);
+        listView.setClickable(true);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+//                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(task.getItems().get(position).getLink()));
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(saxrssTask.getItems().get(position).getLink()));
+//                intent.putExtra(EXTRA_LINK, task.getItems().get(position).getLink());
+                startActivity(intent);
+            }
+        });
+
+        adapter = new ListViewAdapter();
+        //Store the links
+//        articleLinks.add(REALITATEA_URL);
+//        articleLinks.add(EUROSPORT_FR_URL);
+
+
+
+
+        saxrssTask = new SAXRSSTask(articleLinks);
+        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_layout);
+        swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+
+                //Fetch only if an internet connection is available
+                if(!isNetworkAvailable()) {
+                    Snackbar.make(findViewById(android.R.id.content), "No connection", Snackbar.LENGTH_LONG).show();
+                    swipeRefreshLayout.setRefreshing(false);
+                } else {
+                    saxrssTask.execute();
+                    swipeRefreshLayout.setRefreshing(false);
+                    Toast.makeText(MainActivity.this, "Fetched new articles", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+//        ArticleDAO.clear();
+
+        SharedPreferences pref= PreferenceManager.getDefaultSharedPreferences(this);
+        wifi_switch = pref.getBoolean("wifi_switch", true);
+
+        //Get connection info
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+
+        if(!isNetworkAvailable()) {
+            Snackbar.make(findViewById(android.R.id.content), "No connection", Snackbar.LENGTH_LONG).show();
+        } else {
+            saxrssTask.execute();
+
+            type = networkInfo.getType();
+            //Verify if WiFi is turned on
+            if(type == ConnectivityManager.TYPE_WIFI) {
+                //If on WiFi and wifi toggle on, fetch images
+                Toast.makeText(MainActivity.this, "On wifi", Toast.LENGTH_SHORT).show();
+//                CharSequence[] text_wifi = getResources().getStringArray(R.array.values_on_wifi);
+//                ArrayAdapter<CharSequence> arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, text_wifi);
+            } else if(type == ConnectivityManager.TYPE_MOBILE) {
+                Toast.makeText(MainActivity.this, "on mobile", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    private void addToMemoryCache(String key, Bitmap image) {
+        if(getBitmapFromCache(key) == null) {
+            memoryCache.put(key, image);
+        }
+    }
+
+    private Bitmap getBitmapFromCache(String key) {
+        return memoryCache.get(key);
+    }
+
+    //    private synchronized void getArticles(SAXRSSTask saxrssTask) {
+    public boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo info = connectivityManager.getActiveNetworkInfo();
+        return info != null && info.isConnected();
+    }
+
+    @Override
+    public void onBackPressed() {
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    @SuppressWarnings("StatementWithEmptyBody")
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+        // Handle navigation view item clicks here.
+        int id = item.getItemId();
+
+        if (id == R.id.nav_camara) {
+            // Handle the camera action
+        } else if (id == R.id.nav_gallery) {
+
+        } else if (id == R.id.nav_links) {
+            FragmentTransaction manager = getFragmentManager().beginTransaction();
+            DialogFragment dialogFragment = new DialogArticleFragment().newInstance();
+
+            dialogFragment.show(manager, "dialog");
+
+        } else if (id == R.id.nav_settings) {
+            Intent intent = new Intent(this, SettingsActivity.class);
+
+//            intent.putStringArrayListExtra("fish", (ArrayList<String>) links);
+//            intent.putExtra("test", "Hello");
+
+
+            //Fix to add newly added links to settings activity's fragment
+            SettingsActivity.GeneralPreferenceFragment generalPreferenceFragment = new SettingsActivity.GeneralPreferenceFragment();
+            Bundle bundle = new Bundle();
+            bundle.putStringArrayList("links", (ArrayList<String>) articleLinks);
+            bundle.putString("test", "fish");
+            generalPreferenceFragment.setArguments(bundle);
+
+            intent.putExtra("test", "fish323");
+
+            startActivity(intent);
+
+        } else if (id == R.id.nav_share) {
+            //Add real link here
+            String link = "https://www.google.com";
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.setData(Uri.parse(link));
+            startActivity(intent);
+
+        } else if (id == R.id.nav_send) {
+
+        }
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
+    }
+
+    @Override
+    public void onPositiveClick(String articleURL) {
+
+        if(articleURL.length() > 0) {
+
+            articleLinks.add(articleURL);
+            Toast.makeText(MainActivity.this, "Link added", Toast.LENGTH_SHORT).show();
+//            recreate();
+        } else {
+            Toast.makeText(MainActivity.this, "Please add a valid link", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void onNegativeClick() {
+        Toast.makeText(MainActivity.this, "Link not saved", Toast.LENGTH_LONG).show();
+    }
+
+    public class SAXRSSTask extends AsyncTask<Void, Void, Void>{
+
+        private SAXHandler handler;
+        public volatile List<Item> items;
+        private List<String> feedUrl;
+        private ProgressDialog dialog = new ProgressDialog(MainActivity.this);
+//        private ProgressBar progressBar;
+
+        public List<Item> getItems() {
+            return items;
+        }
+
+        public SAXRSSTask(List<String> feedUrl) {
+            this.feedUrl = feedUrl;
+            this.items = new ArrayList<>();
+        }
+
+        private InputStream getInputStream(String link) throws IOException {
+            URL url = new URL(link);
+            return url.openConnection().getInputStream();
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            this.dialog.setMessage(getString(R.string.articleLoading));
+            this.dialog.show();
+            this.dialog.setCancelable(false);
+
+//            progressBar = (ProgressBar) findViewById(R.id.progress_bar);
+//            progressBar.setVisibility(View.VISIBLE);
+
+//            progressBar = new ProgressBar(MainActivity.this);
+//            progressBar.setVisibility(View.VISIBLE);
+//            listView.setEmptyView(progressBar);
+
+        }
+
+        @Override
+        protected void onProgressUpdate(Void... values) {
+            super.onProgressUpdate(values);
+
+
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+
+            if(this.dialog.isShowing()) {
+                dialog.dismiss();
+            }
+
+//            adapter = new ListViewAdapter();
+            adapter.setItemList(items);
+            listView.setAdapter(adapter);
+//            progressBar.setVisibility(View.GONE);
+//            listView.setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+
+            try {
+                SAXParserFactory factory = SAXParserFactory.newInstance();
+                SAXParser parser = factory.newSAXParser();
+                XMLReader reader = parser.getXMLReader();
+
+                handler = new SAXHandler();
+                reader.setContentHandler(handler);
+
+                for(String link : feedUrl) {
+
+                    InputSource source = new InputSource(getInputStream(link));
+                    reader.parse(source);
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            return null;
+        }
+
+        class SAXHandler extends DefaultHandler implements ArticleListener{
+
+            private Item item;
+            private Enclosure enclosure;
+            private boolean inItem;
+            private StringBuilder content;
+            private Channel channel;
+            private boolean inChannel;
+            private Bitmap mIcon;
+            private List<Bitmap> imageList = new ArrayList<>();
+
+            @Override
+            public void characters(char[] ch, int start, int length) throws SAXException {
+                super.characters(ch, start, length);
+                content.append(ch, start,length);
+            }
+
+            @Override
+            public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
+                super.startElement(uri, localName, qName, attributes);
+                content = new StringBuilder();
+
+                if (localName.equalsIgnoreCase("enclosure")) {
+                    enclosure = new Enclosure();
+                    enclosure.setType(attributes.getType("type"));
+                    enclosure.setUrl(attributes.getValue("url"));
+
+                    if(attributes.getValue("length") != null) {
+
+                        enclosure.setLength(Integer.parseInt(attributes.getValue("length")));
+                    }
+
+                    item.setEnclosure(enclosure);
+
+                    //The user is on Wifi connection or he disabled the Wifi-switch, so he's on mobile data
+                    //so download images
+                    if (type == ConnectivityManager.TYPE_WIFI || !wifi_switch) {
+
+//                        item.setBitmap(getBitmapFromCache(attributes.getValue("url")));
+                        item.setBitmap(downloadImage(attributes.getValue("url")));
+                    }
+                }
+
+                if(localName.equalsIgnoreCase("item")) {
+                    item = new Item();
+                    inItem = true;
+                }
+
+                if(localName.equalsIgnoreCase("channel")) {
+                    channel = new Channel();
+                    inChannel = true;
+                }
+            }
+
+            @Override
+            public void endElement(String uri, String localName, String qName) throws SAXException {
+                super.endElement(uri, localName, qName);
+
+                if (localName.equalsIgnoreCase("item")) {
+
+                    item.setChannel(channel);
+                    onArticle(item);
+                }
+
+                if (localName.equalsIgnoreCase("title")) {
+                    if(inItem) {
+                        item.setTitle(content.toString());
+
+                    } else if (inChannel) {
+                        String[] channelTitle = content.toString().split(" ");
+
+                        String title = channelTitle[0].substring(0,1).toUpperCase() + channelTitle[0].substring(1).toLowerCase();
+                        channel.setTitle(title);
+                    }
+                }
+
+                if(localName.equalsIgnoreCase("pubDate")) {
+                    if(inItem) {
+                        item.setPudDate(content.toString());
+                    }
+                }
+
+                if(localName.equalsIgnoreCase("link")) {
+                    if(inItem) {
+                        item.setLink(content.toString());
+                    }
+                }
+            }
+
+            @Override
+            public synchronized void onArticle(final Item item) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        items.add(item);
+//                        itemList.add(item);
+                        adapter.notifyDataSetChanged();
+                    }
+                });
+            }
+
+            private Bitmap downloadImage(String url) {
+                InputStream inputStream;
+                try {
+
+                    //Decode to get dimensions
+//                    BitmapFactory.Options options = new BitmapFactory.Options();
+//                    options.inJustDecodeBounds = true;
+    //                bitmapFactory.inSampleSize = 2;
+
+                    inputStream = new URL(url).openStream();
+                    mIcon = BitmapFactory.decodeStream(inputStream);
+//                    addToMemoryCache(String.valueOf(listView.getId()), mIcon);
+//                    imageList.add(mIcon);
+
+                    //To fix - show images stored in LruCache
+//                    addToMemoryCache(url, mIcon);
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                return mIcon;
+            }
+        }
+    }
+}

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:id="@+id/dialog_add_links"
+    android:padding="10dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/tv_article_title"
+        android:text="@string/dialog_url_title"
+        android:layout_marginLeft="14dp" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/et_article_title"
+        android:layout_marginLeft="14dp"
+        android:layout_marginRight="14dp"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/tv_article_link"
+        android:text="@string/dialog_url_name"
+        android:layout_marginLeft="14dp"/>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/et_article_url"
+        android:layout_marginLeft="14dp"
+        android:layout_marginRight="14dp"/>
+
+</LinearLayout>
