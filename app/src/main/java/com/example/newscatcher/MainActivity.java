@@ -135,8 +135,8 @@ public class MainActivity extends AppCompatActivity
 
         adapter = new ListViewAdapter();
         //Store the links
-//        articleLinks.add(REALITATEA_URL);
-//        articleLinks.add(EUROSPORT_FR_URL);
+        articleLinks.add(REALITATEA_URL);
+        articleLinks.add(EUROSPORT_FR_URL);
 
 
 
