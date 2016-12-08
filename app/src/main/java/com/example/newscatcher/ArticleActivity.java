@@ -1,26 +1,12 @@
 package com.example.newscatcher;
 
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.widget.TextView;
 
-import org.xml.sax.Attributes;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-import org.xml.sax.XMLReader;
-import org.xml.sax.helpers.DefaultHandler;
-
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
 
 public class ArticleActivity extends AppCompatActivity {
     private TextView tvTitle;
@@ -51,8 +37,6 @@ public class ArticleActivity extends AppCompatActivity {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-//        SAXRSSFeed saxrssFeed = new SAXRSSFeed();
-//        saxrssFeed.execute();
 
         //To fetch from given URL (EXTRA_LINK) the article content (div class='article-ad' ??)
         // and article intro (div class='intro-2')

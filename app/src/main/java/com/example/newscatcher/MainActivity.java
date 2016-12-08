@@ -74,7 +74,7 @@ public class MainActivity extends AppCompatActivity
     private volatile List<Item> itemList = new ArrayList<>();
     private SAXRSSTask saxrssTask;
     private LruCache<String, Bitmap> memoryCache;
-    private ProgressBar progressBar;
+    public ProgressDialog dialog;
 
     @Override
     protected void onResume() {
@@ -83,6 +83,19 @@ public class MainActivity extends AppCompatActivity
         if(adapter == null) {
 //            getArticles(articleLinks);
         }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        if(dialog != null) {
+            if(dialog.isShowing()) {
+                dialog.dismiss();
+            }
+        }
+
+
     }
 
     @Override
@@ -133,6 +146,9 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
+        //Initialize ProgressDialog here to avoid ANR when refreshing
+        dialog = new ProgressDialog(MainActivity.this);
+
         adapter = new ListViewAdapter();
         //Store the links
         articleLinks.add(REALITATEA_URL);
@@ -153,6 +169,8 @@ public class MainActivity extends AppCompatActivity
                     Snackbar.make(findViewById(android.R.id.content), "No connection", Snackbar.LENGTH_LONG).show();
                     swipeRefreshLayout.setRefreshing(false);
                 } else {
+                    saxrssTask = null;
+                    saxrssTask = new SAXRSSTask(articleLinks);
                     saxrssTask.execute();
                     swipeRefreshLayout.setRefreshing(false);
                     Toast.makeText(MainActivity.this, "Fetched new articles", Toast.LENGTH_SHORT).show();
@@ -287,7 +305,7 @@ public class MainActivity extends AppCompatActivity
         private SAXHandler handler;
         public volatile List<Item> items;
         private List<String> feedUrl;
-        private ProgressDialog dialog = new ProgressDialog(MainActivity.this);
+//        private ProgressDialog dialog = new ProgressDialog(MainActivity.this);
 //        private ProgressBar progressBar;
 
         public List<Item> getItems() {
@@ -307,17 +325,9 @@ public class MainActivity extends AppCompatActivity
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            this.dialog.setMessage(getString(R.string.articleLoading));
-            this.dialog.show();
-            this.dialog.setCancelable(false);
-
-//            progressBar = (ProgressBar) findViewById(R.id.progress_bar);
-//            progressBar.setVisibility(View.VISIBLE);
-
-//            progressBar = new ProgressBar(MainActivity.this);
-//            progressBar.setVisibility(View.VISIBLE);
-//            listView.setEmptyView(progressBar);
-
+            dialog.setMessage(getString(R.string.articleLoading));
+            dialog.show();
+            dialog.setCancelable(false);
         }
 
         @Override
@@ -331,7 +341,7 @@ public class MainActivity extends AppCompatActivity
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
 
-            if(this.dialog.isShowing()) {
+            if(dialog.isShowing()) {
                 dialog.dismiss();
             }
 
