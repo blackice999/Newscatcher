@@ -3,6 +3,42 @@
 
     <item
         is-multidex="false"
+        jar="C:\Users\W7\AndroidStudioProjects\Newscatcher\app\build\intermediates\incremental-classes\debug\instant-run-bootstrap.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="23.0.2"
+        sha1="6038964d2d473d4729880c2e8161e65cff3630d9">
+        <dex dex="C:\Users\W7\AndroidStudioProjects\Newscatcher\app\build\intermediates\pre-dexed\debug\instant-run-bootstrap_fbfa1c9603e111fd8550f9c142a5fc2d2ea56d40.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Users\W7\AndroidStudioProjects\Newscatcher\app\build\intermediates\exploded-aar\com.android.support\appcompat-v7\23.1.1\jars\classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="23.0.2"
+        sha1="5c5699834e9722f1c288fea2de82725d078ba127">
+        <dex dex="C:\Users\W7\AndroidStudioProjects\Newscatcher\app\build\intermediates\pre-dexed\debug\com.android.support-appcompat-v7-23.1.1_7c818ba4c0dd5dc06d9842bcae9b6f315836d51d.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Users\W7\AndroidStudioProjects\Newscatcher\app\build\intermediates\incremental-runtime-classes\debug\instant-run.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="23.0.2"
+        sha1="a6e0079a8c1d14ef193f39585ec360e3605d693e">
+        <dex dex="C:\Users\W7\AndroidStudioProjects\Newscatcher\app\build\intermediates\pre-dexed\debug\instant-run_51d6c10f54c4a16b8f3ba0546a83c723ae2fc86a.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Users\W7\AndroidStudioProjects\Newscatcher\app\build\intermediates\exploded-aar\com.android.support\support-v4\23.1.1\jars\libs\internal_impl-23.1.1.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="23.0.2"
+        sha1="a4de9c81ae239414e1ed0f86441b02abaf29bca9">
+        <dex dex="C:\Users\W7\AndroidStudioProjects\Newscatcher\app\build\intermediates\pre-dexed\debug\internal_impl-23.1.1_3b15c2a7280469132186329bf2ef9b9ccf6d716e.jar" />
+    </item>
+    <item
+        is-multidex="false"
         jar="C:\Users\W7\AndroidStudioProjects\Newscatcher\app\build\intermediates\exploded-aar\com.android.support\support-v4\23.1.1\jars\classes.jar"
         jumboMode="true"
         optimize="true"
@@ -30,15 +66,6 @@
     </item>
     <item
         is-multidex="false"
-        jar="C:\Users\W7\AndroidStudioProjects\Newscatcher\app\build\intermediates\incremental-classes\debug\instant-run-bootstrap.jar"
-        jumboMode="true"
-        optimize="true"
-        revision="23.0.2"
-        sha1="d897069678935f0ec4e9fa8d5134e393524e05a0">
-        <dex dex="C:\Users\W7\AndroidStudioProjects\Newscatcher\app\build\intermediates\pre-dexed\debug\instant-run-bootstrap_fbfa1c9603e111fd8550f9c142a5fc2d2ea56d40.jar" />
-    </item>
-    <item
-        is-multidex="false"
         jar="C:\Users\W7\AppData\Local\Android\sdk\extras\android\m2repository\com\android\support\support-annotations\23.1.1\support-annotations-23.1.1.jar"
         jumboMode="true"
         optimize="true"
@@ -54,33 +81,6 @@
         revision="23.0.2"
         sha1="09c5e804bc67fc0580360043dff067df574a60d4">
         <dex dex="C:\Users\W7\AndroidStudioProjects\Newscatcher\app\build\intermediates\pre-dexed\debug\com.android.support-recyclerview-v7-23.1.1_9fba745046cb570918d9f947567a8a325dda5d86.jar" />
-    </item>
-    <item
-        is-multidex="false"
-        jar="C:\Users\W7\AndroidStudioProjects\Newscatcher\app\build\intermediates\exploded-aar\com.android.support\appcompat-v7\23.1.1\jars\classes.jar"
-        jumboMode="true"
-        optimize="true"
-        revision="23.0.2"
-        sha1="5c5699834e9722f1c288fea2de82725d078ba127">
-        <dex dex="C:\Users\W7\AndroidStudioProjects\Newscatcher\app\build\intermediates\pre-dexed\debug\com.android.support-appcompat-v7-23.1.1_7c818ba4c0dd5dc06d9842bcae9b6f315836d51d.jar" />
-    </item>
-    <item
-        is-multidex="false"
-        jar="C:\Users\W7\AndroidStudioProjects\Newscatcher\app\build\intermediates\incremental-runtime-classes\debug\instant-run.jar"
-        jumboMode="true"
-        optimize="true"
-        revision="23.0.2"
-        sha1="e86707a43b19f438e1c51ac12e29621ee85f1ca0">
-        <dex dex="C:\Users\W7\AndroidStudioProjects\Newscatcher\app\build\intermediates\pre-dexed\debug\instant-run_51d6c10f54c4a16b8f3ba0546a83c723ae2fc86a.jar" />
-    </item>
-    <item
-        is-multidex="false"
-        jar="C:\Users\W7\AndroidStudioProjects\Newscatcher\app\build\intermediates\exploded-aar\com.android.support\support-v4\23.1.1\jars\libs\internal_impl-23.1.1.jar"
-        jumboMode="true"
-        optimize="true"
-        revision="23.0.2"
-        sha1="a4de9c81ae239414e1ed0f86441b02abaf29bca9">
-        <dex dex="C:\Users\W7\AndroidStudioProjects\Newscatcher\app\build\intermediates\pre-dexed\debug\internal_impl-23.1.1_3b15c2a7280469132186329bf2ef9b9ccf6d716e.jar" />
     </item>
 
 </items>

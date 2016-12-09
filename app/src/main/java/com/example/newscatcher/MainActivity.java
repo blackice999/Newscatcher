@@ -1,8 +1,5 @@
 package com.example.newscatcher;
 
-import android.app.DialogFragment;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -14,13 +11,8 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.os.StrictMode;
-import android.preference.ListPreference;
-import android.preference.MultiSelectListPreference;
-import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
-import android.preference.PreferenceScreen;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
@@ -29,13 +21,10 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.util.LruCache;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.newscatcher.article.Channel;
@@ -197,26 +186,8 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camara) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
-
-        } else if (id == R.id.nav_links) {
-            FragmentTransaction manager = getFragmentManager().beginTransaction();
-            DialogFragment dialogFragment = new DialogArticleFragment().newInstance();
-
-            dialogFragment.show(manager, "dialog");
-
-        } else if (id == R.id.nav_settings) {
+        if (id == R.id.nav_settings) {
             Intent intent = new Intent(this, SettingsActivity.class);
-
-            //Fix to add newly added links to settings activity's fragment
-            SettingsActivity.GeneralPreferenceFragment generalPreferenceFragment = new SettingsActivity.GeneralPreferenceFragment();
-            Bundle bundle = new Bundle();
-            bundle.putStringArrayList("links", (ArrayList<String>) articleLinks);
-            bundle.putString("test", "fish");
-            generalPreferenceFragment.setArguments(bundle);
-
             startActivity(intent);
 
         } else if (id == R.id.nav_share) {
@@ -225,9 +196,6 @@ public class MainActivity extends AppCompatActivity
             Intent intent = new Intent(Intent.ACTION_VIEW);
             intent.setData(Uri.parse(link));
             startActivity(intent);
-
-        } else if (id == R.id.nav_send) {
-
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

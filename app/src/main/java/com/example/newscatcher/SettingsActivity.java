@@ -205,10 +205,6 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             bindPreferenceSummaryToValue(findPreference("example_text"));
             bindPreferenceSummaryToValue(findPreference("example_list"));
 
-            final MultiSelectListPreference articleLinks = (MultiSelectListPreference) findPreference("article_links");
-            bindPreferenceSummaryToValue(articleLinks);
-
-            articleLinks.setPersistent(true);
 
 //            articleLinks.setDefaultValue(new ArrayList<>());
 
@@ -220,8 +216,6 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                     MainActivity.EUROSPORT_FR_URL,
                     MainActivity.FOX_SPORTS_URL
             };
-            articleLinks.setEntries(entries);
-            articleLinks.setEntryValues(entryValues);
 
             ListPreference listPreference = (ListPreference) findPreference("test_list");
             bindPreferenceSummaryToValue(listPreference);

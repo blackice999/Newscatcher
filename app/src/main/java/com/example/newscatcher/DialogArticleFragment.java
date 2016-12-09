@@ -18,8 +18,6 @@ import android.widget.Toast;
  */
 public class DialogArticleFragment extends DialogFragment {
 
-    private View view;
-    private Activity activity;
 
     public DialogArticleFragment newInstance() {
         return new DialogArticleFragment();
