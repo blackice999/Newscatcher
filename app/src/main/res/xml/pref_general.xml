@@ -35,5 +35,6 @@
         android:summary="To spare on your mobile data, use this"
         android:defaultValue="true"/>
 
+    
 
 </PreferenceScreen>
