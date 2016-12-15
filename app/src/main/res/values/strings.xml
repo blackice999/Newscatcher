@@ -86,16 +86,4 @@
     <string name="dialog_url_title">Title</string>
     <string name="dialog_url_name">URL</string>
     <string name="articleLoading">Loading articles</string>
-
-    <string-array name="test_entries">
-        <item> Fish</item>
-        <item> Cow</item>
-        <item> Horse</item>
-    </string-array>
-
-    <string-array name="test_entryvalues">
-        <item> 1</item>
-        <item> 2</item>
-        <item> 3</item>
-    </string-array>
 </resources>

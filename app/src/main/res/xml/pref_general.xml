@@ -36,19 +36,4 @@
         android:defaultValue="true"/>
 
 
-    <MultiSelectListPreference
-        android:key="article_links"
-        android:title="Add links to fetch content"
-        android:entries="@array/article_entries"
-        android:entryValues="@array/article_values"
-        android:negativeButtonText="Add new link"
-        android:positiveButtonText="Remove link" />
-
-    <ListPreference
-        android:key="test_list"
-        android:title="Test list"
-        android:entries="@array/test_entries"
-        android:entryValues="@array/test_entryvalues"
-        android:positiveButtonText="OK"/>
-
 </PreferenceScreen>

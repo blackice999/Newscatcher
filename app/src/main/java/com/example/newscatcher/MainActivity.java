@@ -47,7 +47,7 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, DialogArticleFragment.DialogClickListener {
+        implements NavigationView.OnNavigationItemSelectedListener {
 
     public static final String REALITATEA_URL = "http://rss.realitatea.net/sport.xml";
     public static final String EUROSPORT_FR_URL = "http://www.eurosport.fr/rss.xml";
@@ -202,25 +202,6 @@ public class MainActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
-
-    @Override
-    public void onPositiveClick(String articleURL) {
-
-        if(articleURL.length() > 0) {
-
-            articleLinks.add(articleURL);
-            Toast.makeText(MainActivity.this, "Link added", Toast.LENGTH_SHORT).show();
-//            recreate();
-        } else {
-            Toast.makeText(MainActivity.this, "Please add a valid link", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    @Override
-    public void onNegativeClick() {
-        Toast.makeText(MainActivity.this, "Link not saved", Toast.LENGTH_LONG).show();
-    }
-
     public class SAXRSSTask extends AsyncTask<Void, Void, Void>{
 
         private SAXHandler handler;
@@ -263,7 +244,6 @@ public class MainActivity extends AppCompatActivity
                 dialog.dismiss();
             }
 
-//            adapter = new ListViewAdapter();
             adapter.setItemList(items);
             listView.setAdapter(adapter);
         }

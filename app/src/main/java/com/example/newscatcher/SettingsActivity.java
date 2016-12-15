@@ -181,7 +181,6 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
     protected boolean isValidFragment(String fragmentName) {
         return PreferenceFragment.class.getName().equals(fragmentName)
                 || GeneralPreferenceFragment.class.getName().equals(fragmentName)
-                || DataSyncPreferenceFragment.class.getName().equals(fragmentName)
                 || NotificationPreferenceFragment.class.getName().equals(fragmentName);
     }
 
@@ -204,53 +203,6 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             // guidelines.
             bindPreferenceSummaryToValue(findPreference("example_text"));
             bindPreferenceSummaryToValue(findPreference("example_list"));
-
-
-//            articleLinks.setDefaultValue(new ArrayList<>());
-
-            //Add action for negative and positive button press for multiselectlistpreference
-
-            CharSequence[] entries = {"Realitatea.net", "Eurosport FR", "Fox Sports"};
-            CharSequence[] entryValues = {
-                    MainActivity.REALITATEA_URL,
-                    MainActivity.EUROSPORT_FR_URL,
-                    MainActivity.FOX_SPORTS_URL
-            };
-
-            ListPreference listPreference = (ListPreference) findPreference("test_list");
-            bindPreferenceSummaryToValue(listPreference);
-
-
-            //fix and add the listview content to the listPreference
-            Intent intent = getActivity().getIntent();
-            ArrayList<String> links = intent.getExtras().getStringArrayList("links");
-
-            listPreference.setEntries(entries);
-            listPreference.setEntryValues(entryValues);
-
-//            Bundle bundle  = getArguments();
-//            Log.d("test", bundle.getString("test"));
-
-//            if (links != null) {
-//                CharSequence[] link = links.toArray(new CharSequence[links.size()]);
-//                listPreference.setEntryValues(link);
-//            }
-
-//            String test = intent.getExtras().getString("test");
-//            Log.d("test", test);
-
-//            Bundle bundle = getArguments();
-//            ArrayList<String> articleLink = bundle.getStringArrayList("links");
-//            CharSequence[] link = new CharSequence[0];
-//            if (articleLink != null) {
-//                link = articleLink.toArray(new CharSequence[articleLink.size()]);
-//            }
-//            listPreference.setEntryValues(link);
-
-
-//            articleLinks.setPo
-
-
         }
 
         @Override
@@ -281,36 +233,6 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             // updated to reflect the new value, per the Android Design
             // guidelines.
             bindPreferenceSummaryToValue(findPreference("notifications_new_message_ringtone"));
-        }
-
-        @Override
-        public boolean onOptionsItemSelected(MenuItem item) {
-            int id = item.getItemId();
-            if (id == android.R.id.home) {
-                startActivity(new Intent(getActivity(), SettingsActivity.class));
-                return true;
-            }
-            return super.onOptionsItemSelected(item);
-        }
-    }
-
-    /**
-     * This fragment shows data and sync preferences only. It is used when the
-     * activity is showing a two-pane settings UI.
-     */
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    public static class DataSyncPreferenceFragment extends PreferenceFragment {
-        @Override
-        public void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
-            addPreferencesFromResource(R.xml.pref_data_sync);
-            setHasOptionsMenu(true);
-
-            // Bind the summaries of EditText/List/Dialog/Ringtone preferences
-            // to their values. When their values change, their summaries are
-            // updated to reflect the new value, per the Android Design
-            // guidelines.
-            bindPreferenceSummaryToValue(findPreference("sync_frequency"));
         }
 
         @Override

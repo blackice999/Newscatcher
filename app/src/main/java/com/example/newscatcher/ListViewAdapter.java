@@ -24,12 +24,7 @@ import java.util.Locale;
 public class ListViewAdapter extends BaseAdapter {
 
     public List<Item> itemList;
-    public String imageURL;
     public ArticleViewHolder articleViewHolder;
-
-    public List<Item> getItemList() {
-        return itemList;
-    }
 
     public void setItemList(List<Item> itemList) {
         this.itemList = itemList;
@@ -73,8 +68,6 @@ public class ListViewAdapter extends BaseAdapter {
 
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm", Locale.getDefault());
         String datePublished = simpleDateFormat.format(new Date(item.getPudDate()));
-
-        imageURL = item.getEnclosure().getUrl();
 
         Bitmap image = item.getBitmap();
         articleViewHolder.articleTitle.setText(item.getTitle());
