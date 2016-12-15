@@ -12,9 +12,8 @@ import java.util.Locale;
 /**
  * Created by W7 on 10.01.2016.
  */
-public class Item implements Comparable<Item>{
+public class Item{
     private String title;
-    private String description;
     private String pudDate;
     private Enclosure enclosure;
     private Channel channel;
@@ -37,14 +36,6 @@ public class Item implements Comparable<Item>{
 
     public void setTitle(String title) {
         this.title = title;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
 
     public String getPudDate() {
@@ -79,13 +70,4 @@ public class Item implements Comparable<Item>{
         this.bitmap = bitmap;
     }
 
-    @Override
-    public int compareTo(@NonNull Item another) {
-
-        if(getPudDate() == null || another.getPudDate() == null) {
-            return 0;
-        }
-
-        return getPudDate().compareTo(another.getPudDate());
-    }
 }

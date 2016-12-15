@@ -7,7 +7,7 @@
         jumboMode="true"
         optimize="true"
         revision="23.0.2"
-        sha1="b084a05aefaafb76f7f4351b77ede27d9c61964f">
+        sha1="b2d999eb897b304becc85686c5c47a5a338616f9">
         <dex dex="C:\Users\W7\AndroidStudioProjects\Newscatcher\app\build\intermediates\transforms\dex\debug\folders\1000\10\instant-run-bootstrap_fbfa1c9603e111fd8550f9c142a5fc2d2ea56d40\classes.dex" />
     </item>
     <item
@@ -25,7 +25,7 @@
         jumboMode="true"
         optimize="true"
         revision="23.0.2"
-        sha1="ae06bf70870126da0dafc1a2b93916fa322da770">
+        sha1="b26394b35186a9866ef599585ba6befa0c63a16e">
         <dex dex="C:\Users\W7\AndroidStudioProjects\Newscatcher\app\build\intermediates\transforms\dex\debug\folders\1000\10\instant-run_51d6c10f54c4a16b8f3ba0546a83c723ae2fc86a\classes.dex" />
     </item>
     <item
