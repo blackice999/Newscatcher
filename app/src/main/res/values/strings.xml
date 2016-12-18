@@ -80,8 +80,6 @@
     <string-array name="empty_array"></string-array>
 
     <string name="title_activity_fullscreen">FullscreenActivity</string>
-    <string name="dummy_button">Dummy Button</string>
-    <string name="dummy_content">DUMMY\nCONTENT</string>
     <string name="add_links">Add links</string>
     <string name="dialog_url_title">Title</string>
     <string name="dialog_url_name">URL</string>
