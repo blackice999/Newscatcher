@@ -50,7 +50,6 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     public static final String REALITATEA_URL = "http://rss.realitatea.net/sport.xml";
-    public static final String EUROSPORT_FR_URL = "http://www.eurosport.fr/rss.xml";
     public static final String FOX_SPORTS_URL = "http://api.foxsports.com/v1/rss?partnerKey=zBaFxRyGKCfxBagJG9b8pqLyndmvo7UU&tag=nba";
     private List<String> articleLinks = new ArrayList<>();
     private ListViewAdapter adapter;
@@ -117,7 +116,7 @@ public class MainActivity extends AppCompatActivity
         adapter = new ListViewAdapter();
         //Store the links
         articleLinks.add(REALITATEA_URL);
-        articleLinks.add(EUROSPORT_FR_URL);
+        articleLinks.add(FOX_SPORTS_URL);
 
         saxrssTask = new SAXRSSTask(articleLinks);
         swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_layout);
@@ -132,8 +131,10 @@ public class MainActivity extends AppCompatActivity
                     swipeRefreshLayout.setRefreshing(false);
                 } else {
                     saxrssTask = null;
+                    listView.setAdapter(null);
                     saxrssTask = new SAXRSSTask(articleLinks);
                     saxrssTask.execute();
+
                     swipeRefreshLayout.setRefreshing(false);
                     Toast.makeText(MainActivity.this, "Fetched new articles", Toast.LENGTH_SHORT).show();
                 }
@@ -162,8 +163,7 @@ public class MainActivity extends AppCompatActivity
             }
         }
     }
-
-    //    private synchronized void getArticles(SAXRSSTask saxrssTask) {
+    
     public boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo info = connectivityManager.getActiveNetworkInfo();
