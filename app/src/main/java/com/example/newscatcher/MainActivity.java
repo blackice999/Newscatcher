@@ -21,6 +21,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -50,7 +51,6 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     public static final String REALITATEA_URL = "http://rss.realitatea.net/sport.xml";
-    public static final String FOX_SPORTS_URL = "http://api.foxsports.com/v1/rss?partnerKey=zBaFxRyGKCfxBagJG9b8pqLyndmvo7UU&tag=nba";
     private List<String> articleLinks = new ArrayList<>();
     private ListViewAdapter adapter;
     public int type;
@@ -114,9 +114,9 @@ public class MainActivity extends AppCompatActivity
         dialog = new ProgressDialog(MainActivity.this);
 
         adapter = new ListViewAdapter();
+        
         //Store the links
         articleLinks.add(REALITATEA_URL);
-        articleLinks.add(FOX_SPORTS_URL);
 
         saxrssTask = new SAXRSSTask(articleLinks);
         swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_layout);
@@ -163,7 +163,8 @@ public class MainActivity extends AppCompatActivity
             }
         }
     }
-    
+
+    //    private synchronized void getArticles(SAXRSSTask saxrssTask) {
     public boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo info = connectivityManager.getActiveNetworkInfo();
